@@ -287,7 +287,7 @@ namespace Modding.Menu
             /// <summary>
             /// The action to run when pressing the menu cancel key while selecting this item.
             /// </summary>
-            public Action<MenuPreventDeselect> CancelAction;
+            public Shims.NET.System.Action<MenuPreventDeselect> CancelAction;
             /// <summary>
             /// A function to get padding for the selection scrolling. The returned tuple is `(bottom, top)`.
             /// </summary>

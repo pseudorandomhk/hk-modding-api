@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using MonoMod.Utils;
 using System.Linq;
+using Modding.Utils;
 using Newtonsoft.Json.Linq;
 
 // ReSharper disable file UnusedMember.Global
@@ -146,7 +147,7 @@ namespace Modding
         /// A list of requested scenes to be preloaded and actions to execute on loading of those scenes
         /// </summary>
         /// <returns>List of tuples containg scene names and the respective actions.</returns>
-        public virtual (string, Func<IEnumerator>)[] PreloadSceneHooks() => Array.Empty<(string, Func<IEnumerator>)>();
+        public virtual (string, Func<IEnumerator>)[] PreloadSceneHooks() => Shims.NET.System.Array.Empty<(string, Func<IEnumerator>)>();
 
         /// <inheritdoc />
         /// <summary>

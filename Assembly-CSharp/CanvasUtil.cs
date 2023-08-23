@@ -1,4 +1,4 @@
-using System;
+using Shims.NET.System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -322,7 +322,7 @@ namespace Modding
             Image img = panel.AddComponent<Image>();
             img.sprite = sprite;
             img.preserveAspect = true;
-            img.useSpriteMesh = true;
+            // img.useSpriteMesh = true;
             return panel;
         }
 

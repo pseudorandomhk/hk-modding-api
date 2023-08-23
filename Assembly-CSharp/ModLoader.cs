@@ -7,11 +7,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using JetBrains.Annotations;
+using Modding.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 using UObject = UnityEngine.Object;
 using USceneManager = UnityEngine.SceneManagement.SceneManager;
-using Modding.Utils;
+using _Path = Shims.NET.System.IO.Path;
+using _Array = Shims.NET.System.Array;
 
 namespace Modding
 {
@@ -88,7 +91,7 @@ namespace Modding
             string managed_path = SystemInfo.operatingSystemFamily switch
             {
                 OperatingSystemFamily.Windows => Path.Combine(Application.dataPath, "Managed"),
-                OperatingSystemFamily.MacOSX => Path.Combine(Application.dataPath, "Resources", "Data", "Managed"),
+                OperatingSystemFamily.MacOSX => _Path.Combine(Application.dataPath, "Resources", "Data", "Managed"),
                 OperatingSystemFamily.Linux => Path.Combine(Application.dataPath, "Managed"),
 
                 OperatingSystemFamily.Other => null,
@@ -110,7 +113,7 @@ namespace Modding
 
             Logger.APILogger.LogDebug($"Loading assemblies and constructing mods");
 
-            string mods = Path.Combine(managed_path, "Mods");
+            string mods = System.IO.Path.Combine(managed_path, "Mods");
 
             string[] files = Directory.GetDirectories(mods)
                 .Except(new string[] { Path.Combine(mods, "Disabled") })
@@ -177,7 +180,7 @@ namespace Modding
 
                         try
                         {
-                            if (ty.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>()) is Mod mod)
+                            if (ty.GetConstructor(Type.EmptyTypes)?.Invoke(_Array.Empty<object>()) is Mod mod)
                             {
                                 TryAddModInstance(
                                     ty,
@@ -224,7 +227,7 @@ namespace Modding
             for (int i = 0; i < USceneManager.sceneCountInBuildSettings; i++)
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
-                scenes.Add(Path.GetFileNameWithoutExtension(scenePath));
+                scenes.Add(System.IO.Path.GetFileNameWithoutExtension(scenePath));
             }
 
             ModInstance[] orderedMods = ModInstanceTypeMap.Values

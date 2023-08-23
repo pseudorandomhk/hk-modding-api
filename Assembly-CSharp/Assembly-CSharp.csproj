@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>Modding</RootNamespace>
         <AssemblyName>Assembly-CSharp.mm</AssemblyName>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net35</TargetFramework>
         <AssemblyTitle>Hollow Knight - Mod API Enabled</AssemblyTitle>
         <Product>Modding API</Product>
         <Copyright>Copyright © 2017</Copyright>
@@ -69,8 +69,9 @@
 
         <!-- Copy the API, the documentation, the overridden mscorlib, and the README. -->
         <Copy SourceFiles="$(SolutionDir)/README.ModdingApi.md" DestinationFiles="$(OutputDir)/README.md" />
-        <Copy SourceFiles="$(SolutionDir)/override/mscorlib.dll" DestinationFiles="$(OutputDir)/mscorlib.dll" />
-        <Copy SourceFiles="$(SolutionDir)/override/mscorlib.xml" DestinationFiles="$(OutputDir)/mscorlib.xml" />
+<!--        <Copy SourceFiles="$(SolutionDir)/override/mscorlib.dll" DestinationFiles="$(OutputDir)/mscorlib.dll" />-->
+<!--        <Copy SourceFiles="$(SolutionDir)/override/mscorlib.xml" DestinationFiles="$(OutputDir)/mscorlib.xml" />-->
+        <Copy SourceFiles="$(SolutionDir)/JsonNet/System.Runtime.Serialization.dll" DestinationFiles="$(OutputDir)/System.Runtime.Serialization.dll" />
         <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(OutputDir)/Assembly-CSharp.dll" />
         <Copy SourceFiles="$(TargetDir)Assembly-CSharp.mm.xml" DestinationFiles="$(OutputDir)/Assembly-CSharp.xml" />
         
@@ -108,7 +109,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <EmbeddedResource Include="logo.png"/>
+        <EmbeddedResource Include="logo.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -116,14 +117,14 @@
             <HintPath>../Vanilla/Assembly-CSharp.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
-        <Reference Include="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <HintPath>..\override\mscorlib.dll</HintPath>
+        <Reference Include="mscorlib">
+          <HintPath>..\Vanilla\mscorlib.dll</HintPath>
         </Reference>
-        <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-          <HintPath>../Vanilla/netstandard.dll</HintPath>
-        </Reference>
-        <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>../JsonNet/Newtonsoft.Json.dll</HintPath>
+<!--        <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">-->
+<!--          <HintPath>../Vanilla/netstandard.dll</HintPath>-->
+<!--        </Reference>-->
+        <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
+            <HintPath>..\JsonNet\Newtonsoft.Json.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
             <HintPath>../Vanilla/PlayMaker.dll</HintPath>
@@ -147,9 +148,9 @@
         <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>../Vanilla/UnityEngine.IMGUIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>../Vanilla/UnityEngine.InputLegacyModule.dll</HintPath>
-        </Reference>
+<!--        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">-->
+<!--          <HintPath>../Vanilla/UnityEngine.InputLegacyModule.dll</HintPath>-->
+<!--        </Reference>-->
         <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>../Vanilla/UnityEngine.JSONSerializeModule.dll</HintPath>
         </Reference>

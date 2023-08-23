@@ -11,6 +11,10 @@ using Newtonsoft.Json;
 using UnityEngine;
 using System.Linq;
 using Modding.Delegates;
+using Modding.Utils;
+
+using static Shims.NET.System.Enum;
+
 using Object = UnityEngine.Object;
 
 // ReSharper disable PossibleInvalidCastExceptionInForeachLoop
@@ -33,7 +37,7 @@ namespace Modding
         /// <summary>
         ///     A map of mods to their built menu screens.
         /// </summary>
-        public static ReadOnlyDictionary<IMod, MenuScreen> BuiltModMenuScreens => new(ModListMenu.ModScreens);
+        public static Dictionary<IMod, MenuScreen> BuiltModMenuScreens => new(ModListMenu.ModScreens);
 
         /// <summary>
         ///     Dictionary of mods and their version #s
@@ -278,7 +282,7 @@ namespace Modding
         ///     Called whenever a new gameobject is created with a collider and playmaker2d
         /// </summary>
         /// <remarks>PlayMakerUnity2DProxy.Start</remarks>
-        public static event Action<GameObject> ColliderCreateHook;
+        public static event Shims.NET.System.Action<GameObject> ColliderCreateHook;
 
         /// <summary>
         ///     Called whenever a new gameobject is created with a collider and playmaker2d
@@ -418,7 +422,7 @@ namespace Modding
         ///     bounds of an area of the scene with these.
         /// </summary>
         /// <remarks>SceneManager.DrawBlackBorders</remarks>
-        public static event Action<List<GameObject>> DrawBlackBordersHook;
+        public static event Shims.NET.System.Action<List<GameObject>> DrawBlackBordersHook;
 
         internal static void OnDrawBlackBorders(List<GameObject> borders)
         {
@@ -1370,7 +1374,7 @@ namespace Modding
         ///     Called whenever the player attacks
         /// </summary>
         /// <remarks>HeroController.Attack</remarks>
-        public static event Action<AttackDirection> AttackHook;
+        public static event Shims.NET.System.Action<AttackDirection> AttackHook;
 
         /// <summary>
         ///     Called whenever the player attacks
@@ -1387,7 +1391,7 @@ namespace Modding
 
             Delegate[] invocationList = AttackHook.GetInvocationList();
 
-            foreach (Action<AttackDirection> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<AttackDirection> toInvoke in invocationList)
             {
                 try
                 {
@@ -1438,7 +1442,7 @@ namespace Modding
         /// </summary>
         /// <remarks>HeroController.Attack</remarks>
         [MonoModPublic]
-        public static event Action<AttackDirection> AfterAttackHook;
+        public static event Shims.NET.System.Action<AttackDirection> AfterAttackHook;
 
         /// <summary>
         ///     Called at the end of the attack function
@@ -1455,7 +1459,7 @@ namespace Modding
 
             Delegate[] invocationList = AfterAttackHook.GetInvocationList();
 
-            foreach (Action<AttackDirection> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<AttackDirection> toInvoke in invocationList)
             {
                 try
                 {
@@ -1768,7 +1772,7 @@ namespace Modding
         ///     Called directly after a save has been loaded
         /// </summary>
         /// <remarks>GameManager.LoadGame</remarks>
-        public static event Action<int> SavegameLoadHook;
+        public static event Shims.NET.System.Action<int> SavegameLoadHook;
 
         /// <summary>
         ///     Called directly after a save has been loaded
@@ -1785,7 +1789,7 @@ namespace Modding
 
             Delegate[] invocationList = SavegameLoadHook.GetInvocationList();
 
-            foreach (Action<int> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<int> toInvoke in invocationList)
             {
                 try
                 {
@@ -1802,7 +1806,7 @@ namespace Modding
         ///     Called directly after a save has been saved
         /// </summary>
         /// <remarks>GameManager.SaveGame</remarks>
-        public static event Action<int> SavegameSaveHook;
+        public static event Shims.NET.System.Action<int> SavegameSaveHook;
 
         /// <summary>
         ///     Called directly after a save has been saved
@@ -1819,7 +1823,7 @@ namespace Modding
 
             Delegate[] invocationList = SavegameSaveHook.GetInvocationList();
 
-            foreach (Action<int> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<int> toInvoke in invocationList)
             {
                 try
                 {
@@ -1870,7 +1874,7 @@ namespace Modding
         ///     Called before a save file is deleted
         /// </summary>
         /// <remarks>GameManager.ClearSaveFile</remarks>
-        public static event Action<int> SavegameClearHook;
+        public static event Shims.NET.System.Action<int> SavegameClearHook;
 
         /// <summary>
         ///     Called before a save file is deleted
@@ -1887,7 +1891,7 @@ namespace Modding
 
             Delegate[] invocationList = SavegameClearHook.GetInvocationList();
 
-            foreach (Action<int> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<int> toInvoke in invocationList)
             {
                 try
                 {
@@ -1905,7 +1909,7 @@ namespace Modding
         ///     Called directly after a save has been loaded.  Allows for accessing SaveGame instance.
         /// </summary>
         /// <remarks>GameManager.LoadGame</remarks>
-        public static event Action<SaveGameData> AfterSavegameLoadHook;
+        public static event Shims.NET.System.Action<SaveGameData> AfterSavegameLoadHook;
 
         /// <summary>
         ///     Called directly after a save has been loaded.  Allows for accessing SaveGame instance.
@@ -1922,7 +1926,7 @@ namespace Modding
 
             Delegate[] invocationList = AfterSavegameLoadHook.GetInvocationList();
 
-            foreach (Action<SaveGameData> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<SaveGameData> toInvoke in invocationList)
             {
                 try
                 {
@@ -1940,7 +1944,7 @@ namespace Modding
         ///     Called directly before save has been saved to allow for changes to the data before persisted.
         /// </summary>
         /// <remarks>GameManager.SaveGame</remarks>
-        public static event Action<SaveGameData> BeforeSavegameSaveHook;
+        public static event Shims.NET.System.Action<SaveGameData> BeforeSavegameSaveHook;
 
         /// <summary>
         ///     Called directly before save has been saved to allow for changes to the data before persisted.
@@ -1957,7 +1961,7 @@ namespace Modding
 
             Delegate[] invocationList = BeforeSavegameSaveHook.GetInvocationList();
 
-            foreach (Action<SaveGameData> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<SaveGameData> toInvoke in invocationList)
             {
                 try
                 {
@@ -2011,7 +2015,7 @@ namespace Modding
         /// <summary>
         ///     Called after a game has been cleared from a slot.
         /// </summary>
-        public static event Action<int> AfterSaveGameClearHook;
+        public static event Shims.NET.System.Action<int> AfterSaveGameClearHook;
 
         /// <summary>
         ///     Called after a game has been cleared from a slot.
@@ -2027,7 +2031,7 @@ namespace Modding
 
             Delegate[] invocationList = AfterSaveGameClearHook.GetInvocationList();
 
-            foreach (Action<int> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<int> toInvoke in invocationList)
             {
                 try
                 {
@@ -2042,8 +2046,8 @@ namespace Modding
 
         #endregion
 
-        internal static event Action<ModSavegameData> SaveLocalSettings;
-        internal static event Action<ModSavegameData> LoadLocalSettings;
+        internal static event Shims.NET.System.Action<ModSavegameData> SaveLocalSettings;
+        internal static event Shims.NET.System.Action<ModSavegameData> LoadLocalSettings;
 
         internal static void OnSaveLocalSettings(ModSavegameData data)
         {
@@ -2060,7 +2064,7 @@ namespace Modding
         ///     Called after a new Scene has been loaded
         /// </summary>
         /// <remarks>N/A</remarks>
-        public static event Action<string> SceneChanged;
+        public static event Shims.NET.System.Action<string> SceneChanged;
 
         /// <summary>
         ///     Called after a new Scene has been loaded
@@ -2077,7 +2081,7 @@ namespace Modding
 
             Delegate[] invocationList = SceneChanged.GetInvocationList();
 
-            foreach (Action<string> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<string> toInvoke in invocationList)
             {
                 try
                 {

@@ -35,7 +35,7 @@ namespace Modding.Patches
 
         [MonoModReplace]
         public ButtonSkin GetKeyboardSkinFor(PlayerAction action) => this.GetButtonSkinFor(
-            action.GetKeyOrMouseBinding().ToString()
+            action.GetKeyBinding().ToString()
         );
         [MonoModReplace]
         public ButtonSkin GetControllerButtonSkinFor(PlayerAction action) => this.GetButtonSkinFor(

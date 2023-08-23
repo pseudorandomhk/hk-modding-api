@@ -1,4 +1,4 @@
-using System;
+using Shims.NET.System;
 using MonoMod;
 using UnityEngine.EventSystems;
 

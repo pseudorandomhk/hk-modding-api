@@ -338,11 +338,11 @@ namespace Modding.Menu
             // FixVerticalAlign
             buttonmapText.AddComponent<FixVerticalAlign>().labelFixType = FixVerticalAlign.LabelFixType.KeyMap;
             // FakeThrobber to calm NREs
-            var throbber = new GameObject("throbber");
-            GameObject.DontDestroyOnLoad(throbber);
-            throbber.transform.SetParent(keymap.transform, false);
-            mapButton.listeningThrobber = throbber.AddComponent<Throbber>();
-            ReflectionHelper.SetField( mapButton.listeningThrobber,"sprites",new Sprite[0]);
+            // var throbber = new GameObject("throbber");
+            // GameObject.DontDestroyOnLoad(throbber);
+            // throbber.transform.SetParent(keymap.transform, false);
+            // mapButton.listeningThrobber = throbber.AddComponent<Throbber>();
+            // ReflectionHelper.SetField( mapButton.listeningThrobber,"sprites",new Sprite[0]);
             
             mapButton.GetBindingPublic();
             mapButton.ShowCurrentBinding();

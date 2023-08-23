@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Modding.Utils;
 using UnityEngine;
 using MonoMod;
+
+using static Shims.NET.System.Enum;
 
 // ReSharper disable All
 #pragma warning disable 1591, 0108, 0169, 0649, 0414, CS0626

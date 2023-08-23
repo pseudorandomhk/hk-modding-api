@@ -1,4 +1,7 @@
+using Modding.Utils;
 using UnityEngine;
+
+using static Shims.UnityEngine.Vector2;
 
 namespace Modding.Menu
 {
@@ -91,7 +94,7 @@ namespace Modding.Menu
         public static Vector2 ParentPointFromChild(
             RectTransformData child,
             Vector2 childPoint
-        ) => child.anchorMin + (child.anchorMax - child.anchorMin) * childPoint;
+        ) => child.anchorMin + multiply(child.anchorMax - child.anchorMin, childPoint);
 
         /// <summary>
         /// Translates an anchored position by a relative vector.
@@ -224,8 +227,8 @@ namespace Modding.Menu
         /// Scales both dimensions of a <c>RelVector2</c> up by the respective factor in a <c>Vector2</c>.
         /// </summary>
         public static RelVector2 operator *(RelVector2 lhs, Vector2 rhs) => new RelVector2(
-            lhs.Delta * rhs,
-            lhs.Relative * rhs
+            multiply(lhs.Delta, rhs),
+            multiply(lhs.Relative, rhs)
         );
         /// <summary>
         /// Scales both dimensions of a <c>RelVector2</c> down by a constant factor.

@@ -1,4 +1,4 @@
-using System;
+using Shims.NET.System;
 using InControl;
 
 namespace Modding
@@ -9,22 +9,21 @@ namespace Modding
     public static class KeybindUtil
     {
         /// <summary>
-        /// Gets a <c>KeyOrMouseBinding</c> from a player action.
+        /// Gets a <c>Key</c> from a player action.
         /// </summary>
         /// <param name="action">The player action</param>
         /// <returns></returns>
-        public static InputHandler.KeyOrMouseBinding GetKeyOrMouseBinding(this PlayerAction action)
+        public static Key GetKeyBinding(this PlayerAction action)
         {
             foreach (BindingSource src in action.Bindings)
             {
-                InputHandler.KeyOrMouseBinding ret = src switch
+                Key ret = src switch
                 {
-                    KeyBindingSource { Control.IncludeCount: 1 } kbs => new InputHandler.KeyOrMouseBinding(kbs.Control.GetInclude(0)),
-                    MouseBindingSource mbs => new InputHandler.KeyOrMouseBinding(mbs.Control),
+                    KeyBindingSource { Control.IncludeCount: 1 } kbs => kbs.Control.GetInclude(0),
                     _ => default
                 };
                 
-                if (!InputHandler.KeyOrMouseBinding.IsNone(ret))
+                if (ret != Key.None)
                 {
                     return ret;
                 }
@@ -38,15 +37,11 @@ namespace Modding
         /// </summary>
         /// <param name="action">The player action</param>
         /// <param name="binding">The binding</param>
-        public static void AddKeyOrMouseBinding(this PlayerAction action, InputHandler.KeyOrMouseBinding binding)
+        public static void AddKeyOrMouseBinding(this PlayerAction action, Key binding)
         {
-            if (binding.Key != Key.None)
+            if (binding != Key.None)
             {
-                action.AddBinding(new KeyBindingSource(new KeyCombo(binding.Key)));
-            }
-            else if (binding.Mouse != Mouse.None)
-            {
-                action.AddBinding(new MouseBindingSource(binding.Mouse));
+                action.AddBinding(new KeyBindingSource(new KeyCombo(binding)));
             }
         }
 
@@ -55,15 +50,11 @@ namespace Modding
         /// </summary>
         /// <param name="src">The source string</param>
         /// <returns></returns>
-        public static InputHandler.KeyOrMouseBinding? ParseBinding(string src)
+        public static Key? ParseBinding(string src)
         {
             if (Enum.TryParse<Key>(src, out var key))
             {
-                return new InputHandler.KeyOrMouseBinding(key);
-            }
-            else if (Enum.TryParse<Mouse>(src, out var mouse))
-            {
-                return new InputHandler.KeyOrMouseBinding(mouse);
+                return key;
             }
             else
             {

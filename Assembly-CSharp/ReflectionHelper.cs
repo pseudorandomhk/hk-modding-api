@@ -1,10 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Shims.NET.System.Collections.Concurrent;
+using Shims.NET.System.Threading.Tasks;
+using Shims.NET.System.Reflection;
 using MonoMod.Utils;
 
 namespace Modding
@@ -17,11 +18,11 @@ namespace Modding
         private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, FieldInfo>> Fields = new();
         private static readonly ConcurrentDictionary<FieldInfo, Delegate> FieldGetters = new();
         private static readonly ConcurrentDictionary<FieldInfo, Delegate> FieldSetters = new();
-
+        
         private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, PropertyInfo>> Properties = new();
         private static readonly ConcurrentDictionary<PropertyInfo, Delegate> PropertyGetters = new();
         private static readonly ConcurrentDictionary<PropertyInfo, Delegate> PropertySetters = new();
-
+        
         private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, MethodInfo>> Methods = new();
         private static readonly ConcurrentDictionary<MethodInfo, FastReflectionDelegate> MethodsDelegates = new();
 
@@ -574,7 +575,7 @@ namespace Modding
             ILGenerator gen = dm.GetILGenerator();
 
             gen.Emit(OpCodes.Ldarg_0);
-            gen.Emit(OpCodes.Call, pi.GetMethod);
+            gen.Emit(OpCodes.Call, pi.GetGetMethod(true));
             gen.Emit(OpCodes.Ret);
 
             d = dm.Generate().CreateDelegate(typeof(Func<TType, TProperty>));
@@ -605,7 +606,7 @@ namespace Modding
 
             ILGenerator gen = dm.GetILGenerator();
 
-            gen.Emit(OpCodes.Call, pi.GetMethod);
+            gen.Emit(OpCodes.Call, pi.GetGetMethod(true));
             gen.Emit(OpCodes.Ret);
 
             d = dm.Generate().CreateDelegate(typeof(Func<TProperty>));
@@ -638,7 +639,7 @@ namespace Modding
 
             gen.Emit(OpCodes.Ldarg_0);
             gen.Emit(OpCodes.Ldarg_1);
-            gen.Emit(OpCodes.Call, pi.SetMethod);
+            gen.Emit(OpCodes.Call, pi.GetGetMethod(true));
             gen.Emit(OpCodes.Ret);
 
             d = dm.Generate().CreateDelegate(typeof(Action<TType, TProperty>));
@@ -670,7 +671,7 @@ namespace Modding
             ILGenerator gen = dm.GetILGenerator();
 
             gen.Emit(OpCodes.Ldarg_0);
-            gen.Emit(OpCodes.Call, pi.SetMethod);
+            gen.Emit(OpCodes.Call, pi.GetGetMethod(true));
             gen.Emit(OpCodes.Ret);
 
             d = dm.Generate().CreateDelegate(typeof(Action<TProperty>));

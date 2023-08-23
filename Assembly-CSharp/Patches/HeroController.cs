@@ -11,6 +11,39 @@ namespace Modding.Patches
     [MonoModPatch("global::HeroController")]
     public class HeroController : global::HeroController
     {
+        [MonoModIgnore] private static HeroController _instance;
+
+        [MonoModAdded]
+        public static HeroController SilentInstance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<HeroController>();
+                    if (_instance && Application.isPlaying)
+                    {
+                        DontDestroyOnLoad(_instance);
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        [MonoModReplace]
+        public static HeroController get_instance()
+        {
+            HeroController silentInstance = SilentInstance;
+            if (!silentInstance)
+            {
+                Debug.LogError("Couldn't find a Hero, make sure one exists in the scene.");
+            }
+            return silentInstance;
+        }
+
+        [MonoModAdded]
+        public static HeroController UnsafeInstance => _instance;
+
         #region Attack()
 
         [MonoModIgnore]

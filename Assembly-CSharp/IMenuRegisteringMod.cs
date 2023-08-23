@@ -48,7 +48,7 @@ namespace Modding
             /// <summary>
             /// A function to take the current value index and save it.
             /// </summary>
-            public Action<int> Saver;
+            public Shims.NET.System.Action<int> Saver;
             /// <summary>
             /// A function to get the saved data and convert it into a value index.
             /// </summary>
@@ -57,7 +57,7 @@ namespace Modding
             /// <summary>
             /// Creates a new menu entry.
             /// </summary>
-            public MenuEntry(string name, string[] values, string description, Action<int> saver, Func<int> loader)
+            public MenuEntry(string name, string[] values, string description, Shims.NET.System.Action<int> saver, Func<int> loader)
             {
                 this.Name = name;
                 this.Description = description;
@@ -103,7 +103,7 @@ namespace Modding
         /// <summary>
         /// Sets the mod to an enabled or disabled state. This will not be updated until menu is hidden
         /// </summary>
-        public Action<bool> SetModEnabled;
+        public Shims.NET.System.Action<bool> SetModEnabled;
         /// <summary>
         /// Gets if the mod is enabled or disabled. This will not be updated until menu is hidden
         /// </summary>

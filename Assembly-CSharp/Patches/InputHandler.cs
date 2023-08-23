@@ -1,3 +1,4 @@
+using InControl;
 using MonoMod;
 using UnityEngine;
 

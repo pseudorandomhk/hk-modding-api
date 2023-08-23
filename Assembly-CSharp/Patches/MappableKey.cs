@@ -15,7 +15,7 @@ namespace Modding.Patches
         [MonoModIgnore]
         private PlayerAction playerAction;
         [MonoModIgnore]
-        private InputHandler.KeyOrMouseBinding currentBinding;
+        private Key currentBinding;
         [MonoModIgnore]
         private UIButtonSkins uibs;
         [MonoModIgnore]
@@ -52,7 +52,7 @@ namespace Modding.Patches
             this.SetupRefs();
             if (this.actionSet != null)
             {
-                this.currentBinding = this.playerAction.GetKeyOrMouseBinding();
+                this.currentBinding = this.playerAction.GetKeyBinding();
             }
             else
             {
