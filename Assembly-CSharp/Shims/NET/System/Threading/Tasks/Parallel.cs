@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shims.NET.System.Threading.Tasks;
+namespace System.Threading.Tasks;
 
 // laziness ftw
 /// <summary>

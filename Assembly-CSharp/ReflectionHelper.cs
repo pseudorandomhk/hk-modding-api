@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using JetBrains.Annotations;
 using Shims.NET.System.Collections.Concurrent;
-using Shims.NET.System.Threading.Tasks;
+using System.Threading.Tasks;
 using Shims.NET.System.Reflection;
 using MonoMod.Utils;
 
