@@ -108,7 +108,7 @@ namespace Modding
 
         private string GetGlobalSettingsPath()
         {
-            string globalSettingsFileName = $"{GetType().Name}.GlobalSettings.json";
+            string globalSettingsFileName = $"{GetType().Name}.GlobalSettings.1028.json";
 
             string location = GetType().Assembly.Location;
             string directory = Path.GetDirectoryName(location);

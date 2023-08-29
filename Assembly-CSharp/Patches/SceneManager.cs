@@ -15,7 +15,7 @@ namespace Modding.Patches
     public class SceneManager : global::SceneManager
     {
         [MonoModIgnore]
-        private bool gameplayScene;
+        private bool isGameplayScene;
 
         [MonoModIgnore]
         private HeroController heroCtrl;
@@ -31,7 +31,7 @@ namespace Modding.Patches
         //Added checks for null and an attempt to fix any missing references
         private void Update()
         {
-            if (this.gameplayScene)
+            if (this.isGameplayScene)
             {
                 if (!this.heroInfoSent && this.heroCtrl != null && (this.heroCtrl.heroLight == null || this.heroCtrl.heroLight.material == null))
                 {
@@ -70,10 +70,10 @@ namespace Modding.Patches
 
             ModHooks.OnDrawBlackBorders(borders);
             
-            foreach (var border in borders)
-            {
-                UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(border, base.gameObject.scene);
-            }
+            //foreach (var border in borders)
+            //{
+            //    UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(border, base.gameObject.scene);
+            //}
         }
 
         private extern void orig_Start();

@@ -1,4 +1,4 @@
-﻿using MonoMod;
+using MonoMod;
 
 // ReSharper disable All
 #pragma warning disable 1591, 0108, 0169, 0649, 0414
@@ -6,13 +6,16 @@
 
 namespace Modding.Patches
 {
-    [MonoModPatch("global::EnemyDeathEffects")]
-    public class EnemyDeathEffects : global::EnemyDeathEffects
+    public class EnemyDeathEffects
     {
-        [MonoModIgnore]
         private bool didFire;
 
-        public extern void orig_RecieveDeathEvent(float? attackDirection, bool resetDeathEvent = false, bool spellBurn = false, bool isWatery = false);
+        public void orig_RecieveDeathEvent(float? attackDirection, bool resetDeathEvent = false, bool spellBurn = false, bool isWatery = false)
+        {
+            if (didFire) return;
+            didFire = !resetDeathEvent;
+            RecordKillForJournal();
+        }
 
         //Use this to hook into when an enemy dies. Check EnemyDeathEffects.didFire to prevent doing any actions on redundant invokes.
         public void RecieveDeathEvent(float? attackDirection, bool resetDeathEvent = false, bool spellBurn = false, bool isWatery = false)
@@ -22,10 +25,9 @@ namespace Modding.Patches
             orig_RecieveDeathEvent(attackDirection, resetDeathEvent, spellBurn, isWatery);
         }
 
-        [MonoModIgnore]
         private string playerDataName;
 
-        private extern void orig_RecordKillForJournal();
+        private void orig_RecordKillForJournal() { }
 
         private void RecordKillForJournal()
         {
@@ -36,6 +38,12 @@ namespace Modding.Patches
             ModHooks.OnRecordKillForJournal(this, playerDataName, boolName, intName, boolName2);
             
             orig_RecordKillForJournal();
+        }
+
+        public EnemyDeathEffects(string playerDataName)
+        {
+            this.playerDataName = playerDataName;
+            this.didFire = false;
         }
     }
 }

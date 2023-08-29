@@ -1,11 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using JetBrains.Annotations;
-using Shims.NET.System.Collections.Concurrent;
-using Shims.NET.System.Threading.Tasks;
-using Shims.NET.System.Reflection;
+using System.Threading.Tasks;
 using MonoMod.Utils;
 
 namespace Modding

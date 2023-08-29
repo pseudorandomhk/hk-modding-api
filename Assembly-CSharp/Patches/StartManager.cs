@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System.Collections;
+using System.Threading;
 using MonoMod;
 using UnityEngine;
 
@@ -13,48 +14,40 @@ namespace Modding.Patches
     public class StartManager : global::StartManager
     {
         [MonoModIgnore]
-        private bool confirmedLanguage;
-
-        [MonoModIgnore]
         private RuntimePlatform platform;
 
         [MonoModIgnore]
-        private StandaloneLoadingSpinner loadSpinnerPrefab;
+        private extern IEnumerator LoadMainMenu();
 
         [MonoModIgnore]
-        private extern Sprite GetControllerSpriteForPlatform(RuntimePlatform runtimePlatform);
+        private AsyncOperation loadop;
 
-        [MonoModIgnore]
-        private extern IEnumerator ShowLanguageSelect();
-
-        [MonoModIgnore]
-        private extern IEnumerator LanguageSettingDone();
-
-        private IEnumerator Start()
+        private void Start()
         {
-            this.controllerImage.sprite = this.GetControllerSpriteForPlatform(this.platform);
-            AsyncOperation loadOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Menu_Title");
-            loadOperation.allowSceneActivation = false;
-            bool showLanguageSelect = !this.CheckIsLanguageSet();
-            if (showLanguageSelect && Platform.Current.ShowLanguageSelect)
+            if (this.showProgessIndicator)
             {
-                yield return base.StartCoroutine(this.ShowLanguageSelect());
-                while (!this.confirmedLanguage)
-                {
-                    yield return null;
-                }
-
-                yield return base.StartCoroutine(this.LanguageSettingDone());
+                this.progressIndicator.gameObject.SetActive(true);
             }
+            else
+            {
+                this.progressIndicator.gameObject.SetActive(false);
+            }
+            if (this.platform == RuntimePlatform.WindowsPlayer || this.platform == RuntimePlatform.WindowsEditor || this.platform == RuntimePlatform.LinuxPlayer)
+            {
+                this.controllerImage.sprite = this.winController;
+            }
+            else if (this.platform == RuntimePlatform.OSXPlayer || this.platform == RuntimePlatform.OSXEditor)
+            {
+                this.controllerImage.sprite = this.osxController;
+            }
+            base.StartCoroutine(this.LoadMainMenu());
+            base.StartCoroutine(this.EagerlyActivateMainMenu());
+        }
 
-            this.startManagerAnimator.SetBool("WillShowControllerNotice", false);
-            this.startManagerAnimator.SetBool("WillShowQuote", true);
-
-            StandaloneLoadingSpinner loadSpinner = UnityEngine.Object.Instantiate<StandaloneLoadingSpinner>(this.loadSpinnerPrefab);
-            loadSpinner.Setup(null);
-            loadOperation.allowSceneActivation = true;
-            yield return loadOperation;
-            yield break;
+        private IEnumerator EagerlyActivateMainMenu()
+        {
+            yield return new WaitUntil(() => this.loadop != null);
+            this.ControllerNoticeFinished();
         }
     }
 }

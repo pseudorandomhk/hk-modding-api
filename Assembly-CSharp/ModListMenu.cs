@@ -215,7 +215,7 @@ namespace Modding
                     .Build();
 
                 var optScreen = UIManager.instance.optionsMenuScreen;
-                var mbl = (Modding.Patches.MenuButtonList)optScreen.gameObject.GetComponent<MenuButtonList>();
+                //var mbl = (Modding.Patches.MenuButtonList)optScreen.gameObject.GetComponent<MenuButtonList>();
                 new ContentArea(optScreen.content.gameObject, new SingleContentLayout(new Vector2(0.5f, 0.5f)))
                     .AddWrappedItem(
                         "ModMenuButtonWrapper",
@@ -233,10 +233,10 @@ namespace Modding
                                 },
                                 out var modButton
                             );
-                            mbl.AddSelectableEnd(modButton, 1);
+                            //mbl.AddSelectableEnd(modButton, 1);
                         }
                     );
-                mbl.RecalculateNavigation();
+                //mbl.RecalculateNavigation();
             };
         }
 

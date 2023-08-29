@@ -1,5 +1,6 @@
+using System.IO;
 using UnityEngine;
-
+using static Shims.NET.System.IO.Stream;
 
 namespace Modding.Menu
 {
@@ -91,6 +92,20 @@ namespace Modding.Menu
                             break;
                     }
             }
+            ScrollbarHandleSprite = CreateSpriteFromPng("Modding.scrollbarhandle.png");
+            ScrollbarBackgroundSprite = CreateSpriteFromPng("Modding.scrollbarbackground.png");
+        }
+
+        internal static Sprite CreateSpriteFromPng(string resourcePath)
+        {
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            Stream s = typeof(MenuResources).Assembly.GetManifestResourceStream(resourcePath);
+            using MemoryStream ms = new();
+            s.CopyTo(ms);
+            byte[] buffer = ms.ToArray();
+            texture.LoadImage(buffer, markNonReadable: true);
+            texture.filterMode = FilterMode.Trilinear;
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 64);
         }
     }
 }
