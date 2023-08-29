@@ -86,15 +86,17 @@ namespace Modding
                 Logger.APILogger.LogError(e);
             }
 
+            HookRuntimePatches.Hook();
+
             Logger.APILogger.Log("Starting mod loading");
 
-            string managed_path = SystemInfo.operatingSystemFamily switch
+            string managed_path = Application.platform switch
             {
-                OperatingSystemFamily.Windows => Path.Combine(Application.dataPath, "Managed"),
-                OperatingSystemFamily.MacOSX => _Path.Combine(Application.dataPath, "Resources", "Data", "Managed"),
-                OperatingSystemFamily.Linux => Path.Combine(Application.dataPath, "Managed"),
+                RuntimePlatform.WindowsPlayer => Path.Combine(Application.dataPath, "Managed"),
+                RuntimePlatform.OSXPlayer => _Path.Combine(Application.dataPath, "Resources", "Data", "Managed"),
+                RuntimePlatform.LinuxPlayer => Path.Combine(Application.dataPath, "Managed"),
 
-                OperatingSystemFamily.Other => null,
+                //OperatingSystemFamily.Other => null,
 
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -223,12 +225,12 @@ namespace Modding
                 }
             }
 
-            var scenes = new List<string>();
-            for (int i = 0; i < USceneManager.sceneCountInBuildSettings; i++)
-            {
-                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
-                scenes.Add(System.IO.Path.GetFileNameWithoutExtension(scenePath));
-            }
+            var scenes = new List<string>();    // only used to check if scene exists, can be skipped
+            //for (int i = 0; i < USceneManager.sceneCountInBuildSettings; i++)
+            //{
+            //    string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+            //    scenes.Add(System.IO.Path.GetFileNameWithoutExtension(scenePath));
+            //}
 
             ModInstance[] orderedMods = ModInstanceTypeMap.Values
                 .OrderBy(x => x.Mod?.LoadPriority() ?? 0)
@@ -354,13 +356,13 @@ namespace Modding
                         continue;
                     }
 
-                    if (!scenes.Contains(scene))
-                    {
-                        Logger.APILogger.LogWarn(
-                            $"Mod `{mod.Mod.GetName()}` attempted preload from non-existent scene `{scene}`"
-                        );
-                        continue;
-                    }
+                    //if (!scenes.Contains(scene))
+                    //{
+                    //    Logger.APILogger.LogWarn(
+                    //        $"Mod `{mod.Mod.GetName()}` attempted preload from non-existent scene `{scene}`"
+                    //    );
+                    //    continue;
+                    //}
 
                     if (!modPreloads.TryGetValue(scene, out List<string> objects))
                     {

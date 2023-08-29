@@ -36,7 +36,7 @@ namespace Modding
 
             Directory.CreateDirectory(OldLogDir);
 
-            string current = Path.Combine(Application.persistentDataPath, "ModLog.txt");
+            string current = Path.Combine(Application.persistentDataPath, "ModLog1028.txt");
 
             BackupLog(current, OldLogDir);
             

@@ -76,20 +76,25 @@ namespace Modding.Patches
 
             if (_instance != this)
                 return;
-            
-            var dlc = transform.Find("UICanvas/MainMenuScreen/TeamCherryLogo/Hidden_Dreams_Logo").gameObject;
 
-            var clone = Instantiate(dlc, dlc.transform.parent);
+            //var dlc = transform.Find("UICanvas/MainMenuScreen/TeamCherryLogo/Hidden_Dreams_Logo").gameObject;
+
+            //var clone = Instantiate(dlc, dlc.transform.parent);
+            var clone = new GameObject("Modding_API_Logo");
+            clone.transform.parent = transform.Find("UICanvas/MainMenuScreen/TeamCherryLogo");
+            clone.AddComponent<SpriteRenderer>().sprite = LoadImage();
+            clone.transform.localScale = new Vector3(256.6243f, 256.6243f, 179.637f);
+            clone.transform.localPosition = new Vector3(-3494.121f, -793.9999f, 5157f);
             clone.SetActive(true);
 
             var pos = clone.transform.position;
-            
-            clone.transform.position = pos - new Vector3(0.4f, 0.1f, 0);
-            dlc.transform.position = pos + new Vector3(0.6f, 0f, 0);
+
+            clone.transform.position = pos - new Vector3(0.8f, 0.1f, 0);
+            //dlc.transform.position = pos + new Vector3(0.6f, 0f, 0);
             clone.transform.localScale *= 0.1f;
-            
-            var sr = clone.GetComponent<SpriteRenderer>();
-            sr.sprite = LoadImage();
+
+            //var sr = clone.GetComponent<SpriteRenderer>();
+            //sr.sprite = LoadImage();
         }
         
         private bool hasCalledEditMenus = false;
@@ -113,8 +118,11 @@ namespace Modding.Patches
         [MonoModIgnore]
         public extern void SetMenuState(MainMenuState state);
 
-        [MonoModIgnore]
-        public extern Coroutine StartMenuAnimationCoroutine(IEnumerator coro);
+  
+        public Coroutine StartMenuAnimationCoroutine(IEnumerator coro)
+        {
+            return base.StartCoroutine(coro);
+        }
 
         public void UIGoToDynamicMenu(MenuScreen menu)
         {

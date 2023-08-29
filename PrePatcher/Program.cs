@@ -6,14 +6,31 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
+using ParameterAttributes = Mono.Cecil.ParameterAttributes;
+using System.Reflection;
+using System.IO;
 
 namespace Prepatcher
 {
+    public class Test
+    {
+        public void SetVariable<T>(string s, T val) { }
+
+        public T GetVariable<T>(string s) { return default; }
+    }
+
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class Program
     {
         private static void Main(string[] args)
         {
+            //var mds = typeof(FieldInfo).GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
+            //Console.WriteLine(string.Join("\n", mds.Select(md => (md.IsStatic ? "" : "[instance] ") + $"{md.ReturnType.FullName} {md.Name} (" + string.Join(", ", md.GetParameters().Select(p => p.ParameterType.FullName).ToArray()) + ")").ToArray()));
+
+            //Console.WriteLine(typeof(NotImplementedException).GetConstructor(new Type[0]) == null);
+
+            //return;
+
             if (args.Length < 2)
             {
                 Console.WriteLine("Usage: PrePatcher.exe <Original> <Patched>");
@@ -23,7 +40,7 @@ namespace Prepatcher
             int changes = 0;
 
             using ModuleDefinition module = ModuleDefinition.ReadModule(args[0]);
-            
+
             TypeDefinition pd = module.GetType("", "PlayerData");
 
             MethodDefinition pdGetBool = pd.Methods.First(method => method.Name == "GetBool");
@@ -41,8 +58,11 @@ namespace Prepatcher
             MethodDefinition pdGetVector3 = pd.Methods.First(method => method.Name == "GetVector3");
             MethodDefinition pdSetVector3 = pd.Methods.First(method => method.Name == "SetVector3");
 
-            MethodDefinition pdGetVariable = pd.Methods.First(method => method.Name == "GetVariable");
-            MethodDefinition pdSetVariable = pd.Methods.First(method => method.Name == "SetVariable");
+            MethodDefinition pdGetVariable = GenerateGetVariable(module);
+            MethodDefinition pdSetVariable = GenerateSetVariable(module);
+
+            pd.Methods.Add(pdGetVariable);
+            pd.Methods.Add(pdSetVariable);
 
             MethodDefinition setBoolSwappedArgs = GenerateSwappedMethod(pd, pdSetBool);
             MethodDefinition setFloatSwappedArgs = GenerateSwappedMethod(pd, pdSetFloat);
@@ -64,7 +84,7 @@ namespace Prepatcher
                         continue;
 
                     ILProcessor il = method.Body.GetILProcessor();
-                    
+
                     // Replace short branches with normal branches, etc.
                     // This ensures that inserting instructions won't cause
                     // short branch offsets to overflow and become null
@@ -127,7 +147,7 @@ namespace Prepatcher
                             }
                         }
                     }
-                    
+
                     // After inserting instructions, replace branches
                     // with short branches where possible for optimization
                     method.Body.OptimizeMacros();
@@ -208,7 +228,7 @@ namespace Prepatcher
                 generic.GenericArguments.Add(field.FieldType);
                 callSet = Instruction.Create(OpCodes.Callvirt, generic);
             }
-            
+
             il.InsertAfter(instr, callSet);
 
             instr.OpCode = ldstr.OpCode;
@@ -259,7 +279,7 @@ namespace Prepatcher
                 generic.GenericArguments.Add(field.FieldType);
                 callGet = Instruction.Create(OpCodes.Callvirt, generic);
             }
-            
+
             il.InsertAfter(instr, callGet);
 
             instr.OpCode = ldstr.OpCode;
@@ -329,6 +349,57 @@ namespace Prepatcher
             methodParent.Methods.Add(swapped);
 
             return swapped;
+        }
+
+        private static MethodDefinition GenerateSetVariable(ModuleDefinition asm_csharp)
+        {
+            var SetVariable = new MethodDefinition("SetVariable", MethodAttributes.Public | MethodAttributes.HideBySig, asm_csharp.TypeSystem.Void);
+            SetVariable.DeclaringType = asm_csharp.GetType("", "PlayerData");
+
+            var T = new GenericParameter("T", SetVariable);
+            SetVariable.GenericParameters.Add(T);
+
+            var fieldName = new ParameterDefinition("fieldName", ParameterAttributes.None, asm_csharp.TypeSystem.String);
+            SetVariable.Parameters.Add(fieldName);
+            var value = new ParameterDefinition("value", ParameterAttributes.None, T);
+            SetVariable.Parameters.Add(value);
+
+            SetVariable.Body.InitLocals = true;
+
+            var il = SetVariable.Body.GetILProcessor();
+
+            il.Emit(OpCodes.Newobj, asm_csharp.ImportReference(typeof(NotImplementedException).GetConstructor(new Type[0])));
+            il.Emit(OpCodes.Throw);
+            il.Emit(OpCodes.Ret);
+
+            SetVariable.Body.OptimizeMacros();
+
+            return SetVariable;
+        }
+
+        private static MethodDefinition GenerateGetVariable(ModuleDefinition asm_csharp)
+        {
+            var GetVariable = new MethodDefinition("GetVariable", MethodAttributes.Public | MethodAttributes.HideBySig, asm_csharp.TypeSystem.Object);
+            GetVariable.DeclaringType = asm_csharp.GetType("", "PlayerData");
+
+            var T = new GenericParameter("T", GetVariable);
+            GetVariable.GenericParameters.Add(T);
+            GetVariable.ReturnType = T;
+
+            var fieldName = new ParameterDefinition("fieldName", ParameterAttributes.None, asm_csharp.TypeSystem.String);
+            GetVariable.Parameters.Add(fieldName);
+
+            GetVariable.Body.InitLocals = true;
+
+            var il = GetVariable.Body.GetILProcessor();
+
+            il.Emit(OpCodes.Newobj, asm_csharp.ImportReference(typeof(NotImplementedException).GetConstructor(new Type[0])));
+            il.Emit(OpCodes.Throw);
+            il.Emit(OpCodes.Ret);
+
+            GetVariable.Body.OptimizeMacros();
+
+            return GetVariable;
         }
     }
 }

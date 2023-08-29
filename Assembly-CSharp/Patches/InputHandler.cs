@@ -3,7 +3,7 @@ using MonoMod;
 using UnityEngine;
 
 #pragma warning disable 1591
-#pragma warning disable CS0649
+#pragma warning disable CS0649, CS0108
 
 namespace Modding.Patches
 {
@@ -15,9 +15,6 @@ namespace Modding.Patches
 
         [MonoModIgnore]
         private bool isMenuScene;
-
-        [MonoModIgnore]
-        private bool controllerPressed;
 
         [MonoModIgnore]
         private GameManager gm;
@@ -39,13 +36,18 @@ namespace Modding.Patches
                 return;
             }
 
-            if (controllerPressed)
-            {
-                Cursor.visible = false;
-                return;
-            }
-
             Cursor.visible = true;
+        }
+
+        public static InputHandler Instance;
+
+        [MonoModIgnore]
+        public extern void orig_Awake();
+
+        public void Awake()
+        {
+            Instance = this;
+            orig_Awake();
         }
     }
 }

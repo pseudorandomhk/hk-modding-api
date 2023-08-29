@@ -267,14 +267,16 @@ internal class Preloader : MonoBehaviour
         void CleanupPreloadOperation(string sceneName)
         {
             Logger.APILogger.LogFine($"Unloading scene \"{sceneName}\"");
+
+            USceneManager.UnloadScene(sceneName);
+
+            //AsyncOperation unloadOp = USceneManager.UnloadSceneAsync(sceneName);
             
-            AsyncOperation unloadOp = USceneManager.UnloadSceneAsync(sceneName);
+            //sceneAsyncOperationHolder[sceneName] = (sceneAsyncOperationHolder[sceneName].load, unloadOp);
             
-            sceneAsyncOperationHolder[sceneName] = (sceneAsyncOperationHolder[sceneName].load, unloadOp);
+            //unloadOp.completed += _ => preloadOperationQueue.Remove(unloadOp);
             
-            unloadOp.completed += _ => preloadOperationQueue.Remove(unloadOp);
-            
-            preloadOperationQueue.Add(unloadOp);
+            //preloadOperationQueue.Add(unloadOp);
         }
 
         void StartPreloadOperation(string sceneName)
@@ -320,7 +322,8 @@ internal class Preloader : MonoBehaviour
             
             sceneProgressAverage = sceneAsyncOperationHolder
                                    .Values
-                                   .Select(x => (x.load?.progress ?? 0) * 0.5f + (x.unload?.progress ?? 0) * 0.5f)
+                                   //.Select(x => (x.load?.progress ?? 0) * 0.5f + (x.unload?.progress ?? 0) * 0.5f)
+                                   .Select(x => x.load?.progress ?? 0)
                                    .Average();
             
             UpdateLoadingBarProgress(sceneProgressAverage);

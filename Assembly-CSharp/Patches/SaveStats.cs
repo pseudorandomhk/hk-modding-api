@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GlobalEnums;
 using MonoMod;
 
@@ -22,7 +22,6 @@ namespace Modding.Patches
             float playTime,
             int maxMPReserve,
             int permadeathMode,
-            bool bossRushMode,
             float completionPercentage,
             bool unlockedCompletionRate
         ) : base
@@ -33,7 +32,6 @@ namespace Modding.Patches
             playTime,
             maxMPReserve,
             permadeathMode,
-            bossRushMode,
             completionPercentage,
             unlockedCompletionRate
         ) { }

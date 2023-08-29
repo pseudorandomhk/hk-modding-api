@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#if FALSE
+using System.Collections.Generic;
 using MonoMod;
 using UnityEngine.UI;
 
@@ -73,3 +74,4 @@ namespace Modding.Patches
         private class Entry { }
     }
 }
+#endif
