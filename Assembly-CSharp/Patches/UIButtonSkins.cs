@@ -16,13 +16,19 @@ namespace Modding.Patches
         private extern ButtonSkin GetButtonSkinFor(string buttonName);
         [MonoModIgnore]
         private extern ButtonSkin orig_GetButtonSkinFor(InputControlType inputControlType);
-        
+
+        [MonoModIgnore]
         private InputHandler ih;
 
+        [MonoModIgnore]
         public extern void orig_RefreshKeyMappings();
+        [MonoModIgnore]
         public extern IEnumerator orig_ShowCurrentKeyboardMappings();
+        [MonoModIgnore]
         public extern void orig_RefreshButtonMappings();
+        [MonoModIgnore]
         public extern IEnumerator orig_ShowCurrentButtonMappings();
+        [MonoModIgnore]
         public extern void orig_SetupRefs();
 
         private HashSet<MappableKey> customKeys = new HashSet<MappableKey>();

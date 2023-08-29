@@ -1,4 +1,6 @@
-﻿using System.Collections;
+// TODO: check if hook invocation is needed
+#if FALSE
+using System.Collections;
 using MonoMod;
 
 // ReSharper disable all
@@ -27,3 +29,5 @@ namespace Modding.Patches
         }
     }
 }
+
+#endif

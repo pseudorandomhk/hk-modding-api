@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using GlobalEnums;
 using MonoMod;
@@ -13,7 +14,6 @@ namespace Modding.Patches
     {
         [MonoModIgnore] private static HeroController _instance;
 
-        [MonoModAdded]
         public static HeroController SilentInstance
         {
             get
@@ -41,7 +41,6 @@ namespace Modding.Patches
             return silentInstance;
         }
 
-        [MonoModAdded]
         public static HeroController UnsafeInstance => _instance;
 
         #region Attack()
@@ -90,7 +89,6 @@ namespace Modding.Patches
             {
                 this.cState.altAttack = false;
             }
-
             this.cState.attacking = true;
             if (this.playerData.GetBool(nameof(PlayerData.equippedCharm_32)))
             {
@@ -100,7 +98,6 @@ namespace Modding.Patches
             {
                 this.attackDuration = this.ATTACK_DURATION;
             }
-
             if (this.cState.wallSliding)
             {
                 this.wallSlashing = true;
@@ -124,7 +121,6 @@ namespace Modding.Patches
                         this.slashFsm = this.alternateSlashFsm;
                         this.cState.altAttack = false;
                     }
-
                     if (this.playerData.GetBool(nameof(PlayerData.equippedCharm_35)))
                     {
                         if ((this.playerData.GetInt(nameof(PlayerData.health)) == this.playerData.GetInt(nameof(PlayerData.maxHealth)) && !this.playerData.GetBool(nameof(PlayerData.equippedCharm_27))) || (this.joniBeam && this.playerData.GetBool(nameof(PlayerData.equippedCharm_27))))
@@ -137,7 +133,6 @@ namespace Modding.Patches
                             {
                                 this.grubberFlyBeam = this.grubberFlyBeamPrefabL.Spawn(this.transform.position);
                             }
-
                             if (this.playerData.GetBool(nameof(PlayerData.equippedCharm_13)))
                             {
                                 this.grubberFlyBeam.transform.SetScaleY(this.MANTIS_CHARM_SCALE);
@@ -147,7 +142,6 @@ namespace Modding.Patches
                                 this.grubberFlyBeam.transform.SetScaleY(1f);
                             }
                         }
-
                         if (this.playerData.GetInt(nameof(PlayerData.health)) == 1 && this.playerData.GetBool(nameof(PlayerData.equippedCharm_6)) && this.playerData.GetInt(nameof(PlayerData.healthBlue)) < 1)
                         {
                             if (this.transform.localScale.x < 0f)
@@ -158,7 +152,6 @@ namespace Modding.Patches
                             {
                                 this.grubberFlyBeam = this.grubberFlyBeamPrefabL_fury.Spawn(this.transform.position);
                             }
-
                             if (this.playerData.GetBool(nameof(PlayerData.equippedCharm_13)))
                             {
                                 this.grubberFlyBeam.transform.SetScaleY(this.MANTIS_CHARM_SCALE);
@@ -187,7 +180,6 @@ namespace Modding.Patches
                                 this.grubberFlyBeam.transform.SetScaleY(this.grubberFlyBeam.transform.localScale.y * this.MANTIS_CHARM_SCALE);
                             }
                         }
-
                         if (this.playerData.GetInt(nameof(PlayerData.health)) == 1 && this.playerData.GetBool(nameof(PlayerData.equippedCharm_6)) && this.playerData.GetInt(nameof(PlayerData.healthBlue)) < 1)
                         {
                             this.grubberFlyBeam = this.grubberFlyBeamPrefabU_fury.Spawn(this.transform.position);
@@ -217,7 +209,6 @@ namespace Modding.Patches
                                 this.grubberFlyBeam.transform.SetScaleY(this.grubberFlyBeam.transform.localScale.y * this.MANTIS_CHARM_SCALE);
                             }
                         }
-
                         if (this.playerData.GetInt(nameof(PlayerData.health)) == 1 && this.playerData.GetBool(nameof(PlayerData.equippedCharm_6)) && this.playerData.GetInt(nameof(PlayerData.healthBlue)) < 1)
                         {
                             this.grubberFlyBeam = this.grubberFlyBeamPrefabD_fury.Spawn(this.transform.position);
@@ -231,7 +222,6 @@ namespace Modding.Patches
                     }
                 }
             }
-
             if (this.cState.wallSliding)
             {
                 if (this.cState.facingRight)
@@ -259,15 +249,10 @@ namespace Modding.Patches
             {
                 this.slashFsm.FsmVariables.GetFsmFloat("direction").Value = 270f;
             }
-
             this.altAttackTime = Time.timeSinceLevelLoad;
             ModHooks.AfterAttack(attackDir); //MOD API - Added
             if (!this.cState.attacking) return;       //MOD API - Added
             this.slashComponent.StartSlash();
-            if (this.playerData.GetBool(nameof(PlayerData.equippedCharm_38)))
-            {
-                this.fsm_orbitShield.SendEvent("SLASH");
-            }
         }
 
         #endregion
@@ -320,6 +305,18 @@ namespace Modding.Patches
         }
 
         #endregion
+
+        public void TakeMPQuick(int amount)
+        {
+            if (this.playerData.MPCharge > 0)
+            {
+                this.playerData.TakeMP(amount);
+                if (amount > 1)
+                {
+                    GameCameras.instance.soulOrbFSM.SendEvent("MP DRAIN");
+                }
+            }
+        }
 
         #region LookForQueueInput
 
@@ -481,16 +478,9 @@ namespace Modding.Patches
                     {
                         this.HeroJump();
                     }
-                    else if (this.doubleJumpQueueSteps <= this.DOUBLE_JUMP_QUEUE_STEPS && this.CanDoubleJump() && this.doubleJumpQueuing)
+                    if (this.doubleJumpQueueSteps <= this.DOUBLE_JUMP_QUEUE_STEPS && this.CanDoubleJump() && this.doubleJumpQueuing)
                     {
-                        if (this.cState.onGround)
-                        {
-                            this.HeroJump();
-                        }
-                        else
-                        {
-                            this.DoDoubleJump();
-                        }
+                        this.DoDoubleJump();
                     }
 
                     if (this.CanSwim())
@@ -526,9 +516,6 @@ namespace Modding.Patches
         #region TakeDamage
 
         [MonoModIgnore]
-        private int hitsSinceShielded;
-
-        [MonoModIgnore]
         private extern bool CanTakeDamage();
 
         [MonoModIgnore]
@@ -558,32 +545,22 @@ namespace Modding.Patches
         [MonoModIgnore]
         private extern IEnumerator StartRecoil(CollisionSide impactSide, bool spawnDamageEffect, int damageAmount);
 
-        [MonoModIgnore]
-        public event HeroController.TakeDamageEvent OnTakenDamage;
-
         [MonoModReplace]
-        public void TakeDamage(GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
+        public void TakeDamage(GameObject go, CollisionSide damageSide)
+        {
+            PlayMakerFSM fsm = FSMUtility.LocateFSM(go, "damages_hero");
+            int damageAmount = FSMUtility.GetInt(fsm, "damageDealt");
+            int hazardType = FSMUtility.GetInt(fsm, "hazardType");
+
+            TakeDamageWithInfo(go, damageSide, damageAmount, hazardType);
+        }
+
+        public void TakeDamageWithInfo(GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
         {
             damageAmount = ModHooks.OnTakeDamage(ref hazardType, damageAmount);
             bool spawnDamageEffect = true;
             if (damageAmount > 0)
             {
-                if (BossSceneController.IsBossScene)
-                {
-                    int bossLevel = BossSceneController.Instance.BossLevel;
-                    if (bossLevel != 1)
-                    {
-                        if (bossLevel == 2)
-                        {
-                            damageAmount = 9999;
-                        }
-                    }
-                    else
-                    {
-                        damageAmount *= 2;
-                    }
-                }
-
                 if (this.CanTakeDamage())
                 {
                     if (this.damageMode == DamageMode.HAZARD_ONLY && hazardType == 1)
@@ -601,90 +578,7 @@ namespace Modding.Patches
                         return;
                     }
 
-                    VibrationMixer mixer = VibrationManager.GetMixer();
-                    if (mixer != null)
-                    {
-                        mixer.StopAllEmissionsWithTag("heroAction");
-                    }
-
-                    bool flag = false;
-                    if (this.carefreeShieldEquipped && hazardType == 1)
-                    {
-                        if (this.hitsSinceShielded > 7)
-                        {
-                            this.hitsSinceShielded = 7;
-                        }
-
-                        switch (this.hitsSinceShielded)
-                        {
-                            case 1:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 10f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 2:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 20f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 3:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 30f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 4:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 50f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 5:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 70f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 6:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 80f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            case 7:
-                                if ((float) UnityEngine.Random.Range(1, 100) <= 90f)
-                                {
-                                    flag = true;
-                                }
-
-                                break;
-                            default:
-                                flag = false;
-                                break;
-                        }
-
-                        if (flag)
-                        {
-                            this.hitsSinceShielded = 0;
-                            this.carefreeShield.SetActive(true);
-                            damageAmount = 0;
-                            spawnDamageEffect = false;
-                        }
-                        else
-                        {
-                            this.hitsSinceShielded++;
-                        }
-                    }
-
-                    if (this.playerData.GetBool("equippedCharm_5") && this.playerData.GetInt("blockerHits") > 0 && hazardType == 1 && this.cState.focusing && !flag)
+                    if (this.playerData.GetBool("equippedCharm_5") && this.playerData.GetInt("blockerHits") > 0 && hazardType == 1 && this.cState.focusing)
                     {
                         this.proxyFSM.SendEvent("HeroCtrl-TookBlockerHit");
                         this.audioSource.PlayOneShot(this.blockerImpact, 1f);
@@ -700,7 +594,6 @@ namespace Modding.Patches
                     if (this.cState.wallSliding)
                     {
                         this.cState.wallSliding = false;
-                        this.wallSlideVibrationPlayer.Stop();
                     }
 
                     if (this.cState.touchingWall)
@@ -724,11 +617,7 @@ namespace Modding.Patches
                         this.CancelBounce();
                         this.rb2d.velocity = new Vector2(this.rb2d.velocity.x, 0f);
                     }
-
-                    if (!flag)
-                    {
-                        this.audioCtrl.PlaySound(HeroSounds.TAKE_HIT);
-                    }
+                    this.audioCtrl.PlaySound(HeroSounds.TAKE_HIT);
 
                     damageAmount = ModHooks.AfterTakeDamage(hazardType, damageAmount);
                     if (!this.takeNoDamage && !this.playerData.GetBool("invinciTest"))
@@ -766,18 +655,13 @@ namespace Modding.Patches
                         this.nailChargeTimer = 0f;
                     }
 
-                    if (damageAmount > 0 && this.OnTakenDamage != null)
-                    {
-                        this.OnTakenDamage();
-                    }
-
                     if (this.playerData.GetInt("health") == 0)
                     {
                         base.StartCoroutine(this.Die());
                     }
                     else if (hazardType == 2)
                     {
-                        base.StartCoroutine(this.DieFromHazard(HazardType.SPIKES, (!(go != null)) ? 0f : go.transform.rotation.z));
+                        base.StartCoroutine(this.DieFromHazard(HazardType.SPIKES, go.transform.rotation.z));
                     }
                     else if (hazardType == 3)
                     {
@@ -800,11 +684,8 @@ namespace Modding.Patches
                 {
                     if (hazardType == 2)
                     {
-                        if (!this.takeNoDamage)
-                        {
-                            damageAmount = ModHooks.AfterTakeDamage(hazardType, damageAmount);
-                            this.playerData.TakeHealth(damageAmount);
-                        }
+                        damageAmount = ModHooks.AfterTakeDamage(hazardType, damageAmount);
+                        this.playerData.TakeHealth(damageAmount);
 
                         this.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
                         if (this.playerData.GetInt("health") == 0)
@@ -813,8 +694,7 @@ namespace Modding.Patches
                         }
                         else
                         {
-                            this.audioCtrl.PlaySound(HeroSounds.TAKE_HIT);
-                            base.StartCoroutine(this.DieFromHazard(HazardType.SPIKES, (!(go != null)) ? 0f : go.transform.rotation.z));
+                            base.StartCoroutine(this.DieFromHazard(HazardType.SPIKES, go.transform.rotation.z));
                         }
                     }
                     else if (hazardType == 3)
@@ -879,7 +759,6 @@ namespace Modding.Patches
         // It is used to set the input dash velocity vector for the DashVectorHook
         private Vector2 OrigDashVector()
         {
-            const float BUMP_VELOCITY = 4f;
             const float BUMP_VELOCITY_DASH = 5f;
             Vector2 origVector;
 
@@ -904,7 +783,7 @@ namespace Modding.Patches
                     origVector = new Vector2
                     (
                         velocity,
-                        (!this.cState.onGround) ? BUMP_VELOCITY_DASH : BUMP_VELOCITY
+                        BUMP_VELOCITY_DASH
                     );
                 }
                 else
@@ -917,7 +796,7 @@ namespace Modding.Patches
                 origVector = new Vector2
                 (
                     -velocity,
-                    (!this.cState.onGround) ? BUMP_VELOCITY_DASH : BUMP_VELOCITY
+                    BUMP_VELOCITY_DASH
                 );
             }
             else
@@ -968,5 +847,79 @@ namespace Modding.Patches
             ModHooks.OnDoAttack();
             orig_DoAttack();
         }
+
+        [MonoModIgnore]
+        private extern Transform orig_LocateSpawnPoint();
+
+        [MonoModPublic]
+        public Transform LocateSpawnPoint() => orig_LocateSpawnPoint();
+
+        [MonoModIgnore]
+        private extern void ResetMotion();
+
+        [MonoModIgnore]
+        private float recoilTimer;
+
+        private void CancelDamageRecoil()
+        {
+            cState.recoiling = false;
+            recoilTimer = 0f;
+            ResetMotion();
+            AffectedByGravity(true);
+            SetDamageMode(DamageMode.FULL_DAMAGE);
+        }
+
+        public bool TakeNoDamage
+        {
+            get => takeNoDamage;
+            set => takeNoDamage = value;
+        }
+
+        #region LeaveScene
+
+        [MonoModIgnore]
+        private extern void CancelFallEffects();
+
+        [MonoModIgnore]
+        private bool tilemapTestActive;
+
+        [MonoModIgnore]
+        private extern void StopTilemapTest();
+
+        [MonoModIgnore]
+        private Vector2 transition_vel;
+
+        internal void LeaveSceneByGatePos(GatePosition gatePos)
+        {
+            this.IgnoreInputWithoutReset();
+            this.ResetHardLandingTimer();
+            this.SetState(ActorStates.no_input);
+            this.SetDamageMode(DamageMode.NO_DAMAGE);
+            this.transitionState = HeroTransitionState.EXITING_SCENE;
+            this.CancelFallEffects();
+            this.tilemapTestActive = false;
+            this.transform.parent = null;
+            this.StopTilemapTest();
+            switch (gatePos)
+            {
+                case GatePosition.top:
+                    this.transition_vel = new Vector2(0f, this.MIN_JUMP_SPEED);
+                    this.cState.onGround = false;
+                    break;
+                case GatePosition.right:
+                    this.transition_vel = new Vector2(this.RUN_SPEED, 0f);
+                    break;
+                case GatePosition.left:
+                    this.transition_vel = new Vector2(-this.RUN_SPEED, 0f);
+                    break;
+                case GatePosition.bottom:
+                    this.transition_vel = Vector2.zero;
+                    this.cState.onGround = false;
+                    break;
+            }
+            this.cState.transitioning = true;
+        }
+
+        #endregion
     }
 }

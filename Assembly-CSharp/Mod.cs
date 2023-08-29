@@ -108,7 +108,7 @@ namespace Modding
 
         private string GetGlobalSettingsPath()
         {
-            string globalSettingsFileName = $"{GetType().Name}.GlobalSettings.json";
+            string globalSettingsFileName = $"{GetType().Name}.GlobalSettings.1028.json";
 
             string location = GetType().Assembly.Location;
             string directory = Path.GetDirectoryName(location);
@@ -190,6 +190,12 @@ namespace Modding
         /// </summary>
         /// <returns></returns>
         public virtual string GetMenuButtonText() => $"{GetName()} {Language.Language.Get("MAIN_OPTIONS", "MainMenu")}";
+
+        /// <summary>
+        ///     Returns the time to be waited before loading a scene.
+        /// </summary>
+        /// <returns></returns>
+        public virtual float BeforeAdditiveLoad(string scene) => 0;
 
         private void HookSaveMethods()
         {

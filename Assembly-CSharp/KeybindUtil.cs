@@ -19,7 +19,7 @@ namespace Modding
             {
                 Key ret = src switch
                 {
-                    KeyBindingSource { Control.IncludeCount: 1 } kbs => kbs.Control.GetInclude(0),
+                    KeyBindingSource { Control.Count: 1 } kbs => kbs.Control.Get(0),
                     _ => default
                 };
                 

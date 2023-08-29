@@ -1,7 +1,6 @@
-﻿using MonoMod;
+using MonoMod;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 // ReSharper disable All
 #pragma warning disable 1591, 0108, 0169, 0649, 114, 0414,0162, CS0626, IDE1005, IDE1006
@@ -15,7 +14,7 @@ namespace Modding.Patches
         [MonoModIgnore]
         private SuppressPreloadException.GameCameras gcams;
         [MonoModIgnore]
-        private CameraController cameraCtrl;
+        private global::CameraController cameraCtrl;
         [MonoModIgnore]
         private CameraTarget camTarget;
         [MonoModIgnore]
@@ -35,19 +34,18 @@ namespace Modding.Patches
         {
             this.gcams = SuppressPreloadException.GameCameras.instance;
             if (this.gcams == null)
+            {
                 yield break;
+            }
             this.cameraCtrl = this.gcams.cameraController;
             this.camTarget = this.gcams.cameraTarget;
-            Scene scene = this.gameObject.scene;
             if (this.cameraCtrl == null)
-                yield break;
-            while (this.cameraCtrl.tilemap == null || this.cameraCtrl.tilemap.gameObject.scene != scene)
             {
-                yield return null;
+                yield break;
             }
             if (!this.ValidateBounds())
             {
-                Debug.LogError("Camera bounds are unspecified for " + this.name + ", please specify lock area bounds for this Camera Lock Area.");
+                Debug.LogError("Camera bounds are unspecified for " + base.name + ", please specify lock area bounds for this Camera Lock Area.");
             }
             if (this.box2d != null)
             {
@@ -56,7 +54,6 @@ namespace Modding.Patches
                 this.botSideY = this.box2d.bounds.min.y;
                 this.topSideY = this.box2d.bounds.max.y;
             }
-            yield break;
         }
     }
 }

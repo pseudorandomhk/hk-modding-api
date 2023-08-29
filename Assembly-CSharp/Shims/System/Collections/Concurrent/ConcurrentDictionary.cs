@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shims.NET.System.Collections.Concurrent;
+namespace System.Collections.Concurrent;
 
 /// <summary>
 /// Partial implementation of System::Collections::Concurrent::ConcurrentDictionary from .NET 4.0+.

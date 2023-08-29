@@ -1,4 +1,4 @@
-﻿using MonoMod;
+using MonoMod;
 
 // ReSharper disable All
 #pragma warning disable 1591, 0108, 0169, 0649, 0414
@@ -14,7 +14,7 @@ namespace Modding.Patches
             HitInstance hit = new HitInstance
             {
                 Source = base.Owner,
-                AttackType = (AttackTypes) this.AttackType.Value,
+                AttackType = this.AttackType.Value,
                 CircleDirection = this.CircleDirection.Value,
                 DamageDealt = this.DamageDealt.Value,
                 Direction = this.Direction.Value,
@@ -23,11 +23,13 @@ namespace Modding.Patches
                 MoveAngle = this.MoveAngle.Value,
                 MoveDirection = this.MoveDirection.Value,
                 Multiplier = ((!this.Multiplier.IsNone) ? this.Multiplier.Value : 1f),
-                SpecialType = (SpecialTypes) this.SpecialType.Value,
+                SpecialType = this.SpecialType.Value,
                 IsExtraDamage = false
             };
-            hit = ModHooks.OnHitInstanceBeforeHit(this.Fsm, hit);
-            HitTaker.Hit(this.Target.Value, hit, 3);
+            // TODO: throw UnsupportedOperation if hit is modified
+            //hit = ModHooks.OnHitInstanceBeforeHit(this.Fsm, hit);
+            //HitTaker.Hit(this.Target.Value, hit, 3);
+            ModHooks.OnHitInstanceBeforeHit(this.Fsm, hit);
             base.Finish();
         }
     }

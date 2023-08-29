@@ -52,6 +52,12 @@ namespace Modding
         /// </summary>
         /// <returns></returns>
         string GetMenuButtonText();
+
+        /// <summary>
+        ///     Returns the time to be waited before loading a scene.
+        /// </summary>
+        /// <returns></returns>
+        float BeforeAdditiveLoad(string scene);
     }
 
     internal static class IModExtensions

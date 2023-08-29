@@ -1,3 +1,4 @@
+using Shims;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,9 +31,9 @@ namespace Modding.Menu.Components
             }
             if (selectable is MenuSelectable ms)
             {
-                ms.DontPlaySelectSound = true;
+                //ms.DontPlaySelectSound = true;
                 selectable.Select();
-                ms.DontPlaySelectSound = false;
+                //ms.DontPlaySelectSound = false;
             }
             else
             {

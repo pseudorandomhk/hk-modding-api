@@ -1,4 +1,5 @@
-﻿using MonoMod;
+#if false
+using MonoMod;
 
 // ReSharper disable all
 #pragma warning disable 1591, 108, 114
@@ -33,3 +34,4 @@ namespace Modding.Patches
         }
     }
 }
+#endif
