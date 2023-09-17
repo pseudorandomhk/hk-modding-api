@@ -857,11 +857,13 @@ namespace Modding.Patches
         [MonoModReplace]
         private IEnumerator SetTimeScale(float newTimeScale, float duration)
         {
-            float lastTimeScale = TimeController.GenericTimeScale;
-            for (float timer = 0f; timer < duration; timer += Time.unscaledDeltaTime)
+            float elapsedTime = 0f;
+            float oldTimeScale = Time.timeScale;
+            while (elapsedTime < duration)
             {
-                float t = timer / duration;
-                this.SetTimeScale(Mathf.Lerp(lastTimeScale, newTimeScale, t));
+                elapsedTime += Time.unscaledDeltaTime;
+                float t = elapsedTime / duration;
+                Time.timeScale = Mathf.Lerp(oldTimeScale, newTimeScale, t);
                 yield return null;
             }
             yield break;
@@ -870,7 +872,7 @@ namespace Modding.Patches
         [MonoModReplace]
         private void SetTimeScale(float newTimeScale)
         {
-            TimeController.GenericTimeScale = ((newTimeScale > 0.01f) ? newTimeScale : 0f);
+            Time.timeScale = newTimeScale;
         }
 
         #endregion
