@@ -7,8 +7,6 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using ParameterAttributes = Mono.Cecil.ParameterAttributes;
-using System.Reflection;
-using System.IO;
 
 namespace Prepatcher
 {
@@ -24,13 +22,6 @@ namespace Prepatcher
     {
         private static void Main(string[] args)
         {
-            //var mds = typeof(FieldInfo).GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
-            //Console.WriteLine(string.Join("\n", mds.Select(md => (md.IsStatic ? "" : "[instance] ") + $"{md.ReturnType.FullName} {md.Name} (" + string.Join(", ", md.GetParameters().Select(p => p.ParameterType.FullName).ToArray()) + ")").ToArray()));
-
-            //Console.WriteLine(typeof(NotImplementedException).GetConstructor(new Type[0]) == null);
-
-            //return;
-
             if (args.Length < 2)
             {
                 Console.WriteLine("Usage: PrePatcher.exe <Original> <Patched>");
@@ -40,9 +31,6 @@ namespace Prepatcher
             int changes = 0;
 
             using ModuleDefinition module = ModuleDefinition.ReadModule(args[0]);
-            
-            string unityPath = Path.Combine(new FileInfo(args[0]).Directory.FullName, "UnityEngine.dll");
-            using ModuleDefinition unity_module = ModuleDefinition.ReadModule(unityPath);
 
             TypeDefinition pd = module.GetType("", "PlayerData");
 

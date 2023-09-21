@@ -101,7 +101,7 @@ namespace Modding
         /// <returns></returns>
         public static Sprite NullSprite(byte[] data = null)
         {
-            Texture2D tex = new Texture2D(1, 1);
+            Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, true);
             
             data ??= new byte[] { 0x00, 0x00, 0x00, 0x00 };
 
@@ -121,7 +121,7 @@ namespace Modding
         /// <returns></returns>
         public static Sprite CreateSprite(byte[] data, int x, int y, int width, int height)
         {
-            Texture2D tex = new Texture2D(1, 1);
+            Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, true);
             tex.LoadImage(data);
             tex.anisoLevel = 0;
             return Sprite.Create(tex, new Rect(x, y, width, height), Vector2.zero);

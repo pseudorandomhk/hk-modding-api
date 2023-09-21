@@ -19,14 +19,27 @@ public static class Enum
     ///                      value of the underlying type of <c>TEnum</c>. This parameter is passed uninitialized.</param>
     /// <typeparam name="TEnum">The enumeration type to which to convert <c>value</c>.</typeparam>
     /// <returns><c>true</c> if the <c>value</c> parameter was converted successfully; otherwise, <c>false</c>.</returns>
-    public static bool TryParse<TEnum>(string value, out TEnum result)
+    public static bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct => TryParse(value, false, out result);
+
+    /// <summary>
+    /// Converts the string representation of the name or numeric value of one or more enumerated constants
+    /// to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
+    /// </summary>
+    /// <param name="value">The string representation of the enumeration name or underlying value to convert.</param>
+    /// <param name="caseSensitive"><c>true</c> to ignore case; <c>false</c> to consider case.</param>
+    /// <param name="result">When this method returns, contains an object of type <c>TEnum</c> whose value is represented by
+    ///                      <c>value</c> if the parse operation succeeds. If the parse operation fails, contains the default
+    ///                      value of the underlying type of <c>TEnum</c>. This parameter is passed uninitialized.</param>
+    /// <typeparam name="TEnum">The enumeration type to which to convert <c>value</c>.</typeparam>
+    /// <returns><c>true</c> if the <c>value</c> parameter was converted successfully; otherwise, <c>false</c>.</returns>
+    public static bool TryParse<TEnum>(string value, bool caseSensitive, out TEnum result) where TEnum : struct
     {
         try
         {
-            result = (TEnum)_Enum.Parse(typeof(TEnum), value);
+            result = (TEnum)_Enum.Parse(typeof(TEnum), value, caseSensitive);
             return true;
         }
-        catch (Exception)
+        catch
         {
             result = default;
             return false;

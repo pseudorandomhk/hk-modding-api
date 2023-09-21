@@ -51,12 +51,23 @@ public static class Enumerable
     public static IEnumerable<TSource> Prepend<TSource>(this IEnumerable<TSource> source, TSource element)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
-        return PrependIterator(source, element);
-    }
 
-    private static IEnumerable<TSource> PrependIterator<TSource>(IEnumerable<TSource> source, TSource element)
-    {
         yield return element;
         foreach (TSource e1 in source) yield return e1;
+    }
+
+    /// <summary>
+    /// Adds a value to the end of the sequence.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+    /// <param name="source">A sequence of values.</param>
+    /// <param name="element">The value to append to <paramref name="source"/>.</param>
+    /// <returns>A new sequence that ends with <paramref name="element"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <c>null</c>.</exception>
+    public static IEnumerable<TSource> Append<TSource>(this IEnumerable<TSource> source, TSource element)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        foreach (TSource e1 in source) yield return e1;
+        yield return element;
     }
 }

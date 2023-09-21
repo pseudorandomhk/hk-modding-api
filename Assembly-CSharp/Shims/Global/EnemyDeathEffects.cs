@@ -1,4 +1,3 @@
-using MonoMod;
 using Modding;
 
 // ReSharper disable All
@@ -20,7 +19,7 @@ public class EnemyDeathEffects
     public void RecieveDeathEvent(float? attackDirection, bool resetDeathEvent = false, bool spellBurn = false, bool isWatery = false)
     {
         ModHooks.OnRecieveDeathEvent(this, didFire, ref attackDirection, ref resetDeathEvent, ref spellBurn, ref isWatery);
-            
+        
         _orig_RecieveDeathEvent(attackDirection, resetDeathEvent, spellBurn, isWatery);
     }
 
@@ -33,9 +32,9 @@ public class EnemyDeathEffects
         string boolName = "killed" + this.playerDataName;
         string intName = "kills" + this.playerDataName;
         string boolName2 = "newData" + this.playerDataName;
-            
+        
         ModHooks.OnRecordKillForJournal(this, playerDataName, boolName, intName, boolName2);
-            
+        
         _orig_RecordKillForJournal();
     }
 
