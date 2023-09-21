@@ -1,4 +1,4 @@
-﻿using MonoMod;
+using MonoMod;
 using UnityEngine;
 
 // ReSharper disable All

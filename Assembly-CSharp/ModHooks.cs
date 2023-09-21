@@ -30,7 +30,7 @@ namespace Modding
     {
         private const int _modVersion = 74;
 
-        private static readonly string SettingsPath = Path.Combine(Application.persistentDataPath, "ModdingApi.GlobalSettings.json");
+        private static readonly string SettingsPath = Path.Combine(Application.persistentDataPath, "ModdingApi.GlobalSettings-1028.json");
 
         private static ModHooks _instance;
 
@@ -299,7 +299,7 @@ namespace Modding
 
             Delegate[] invocationList = ColliderCreateHook.GetInvocationList();
 
-            foreach (Action<GameObject> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<GameObject> toInvoke in invocationList)
             {
                 try
                 {
@@ -435,7 +435,7 @@ namespace Modding
 
             Delegate[] invocationList = DrawBlackBordersHook.GetInvocationList();
 
-            foreach (Action<List<GameObject>> toInvoke in invocationList)
+            foreach (Shims.NET.System.Action<List<GameObject>> toInvoke in invocationList)
             {
                 try
                 {

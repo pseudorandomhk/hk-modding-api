@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using GlobalEnums;
@@ -50,15 +51,23 @@ namespace Modding.Patches
 
         #region Transitions
 
+        [MonoModIgnore]
+        [MonoModPublic]
+        private void BeginScene() { }
+
+        public bool IsInSceneTransition { get; private set; }
+
         public extern void orig_LoadScene(string destScene);
 
         public void LoadScene(string destScene)
         {
+            IsInSceneTransition = true;
             destScene = ModHooks.BeforeSceneLoad(destScene);
 
             orig_LoadScene(destScene);
 
             ModHooks.OnSceneChanged(destScene);
+            IsInSceneTransition = false;
         }
 
         public class SceneLoadInfo
@@ -687,10 +696,30 @@ namespace Modding.Patches
         [MonoModIgnore]
         public Scene nextScene { get; private set; }
 
+        private IEnumerator OnBeforeAdditiveLoad(string scene)
+        {
+            foreach (var modInstance in ModLoader.ModInstances.Where(x => x.Mod != null))
+            {
+                float wait;
+                try
+                {
+                    wait =  modInstance.Mod.BeforeAdditiveLoad(scene);
+                }
+                catch (Exception ex)
+                {
+                    Logger.APILogger.LogError($"Error in {nameof(modInstance.Mod.BeforeAdditiveLoad)}\n{ex}");
+                    continue;
+                }
+
+                yield return new WaitForSeconds(wait);
+            }
+        }
+
         [MonoModReplace]
         public IEnumerator LoadSceneAdditive(string destScene)
         {
             Debug.Log("Loading " + destScene);
+            IsInSceneTransition = true;
             destScene = ModHooks.BeforeSceneLoad(destScene);
             this.tilemapDirty = true;
             this.startedOnThisScene = false;
@@ -706,12 +735,13 @@ namespace Modding.Patches
             }
             string exitingScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             this.nextScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(destScene);
-            yield return new WaitForSeconds(1f);
+            yield return OnBeforeAdditiveLoad(destScene);
             AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(destScene, LoadSceneMode.Additive);
             asyncOperation.allowSceneActivation = true;
             yield return asyncOperation;
             UnityEngine.SceneManagement.SceneManager.UnloadScene(exitingScene);
             ModHooks.OnSceneChanged(destScene);
+            IsInSceneTransition = false;
             this.RefreshTilemapInfo(destScene);
             this.ManualLevelStart();
             if (this.NextLevelReady != null)
@@ -741,8 +771,6 @@ namespace Modding.Patches
         #endregion
 
         #region PauseToDynamicMenu
-        [MonoModIgnore]
-        public extern void SetTimeScale(float timescale);
 
         [MonoModIgnore]
         private bool timeSlowed;
@@ -823,6 +851,47 @@ namespace Modding.Patches
         }
 
         #endregion
+
+        #region SetTimeScale
+
+        [MonoModReplace]
+        private IEnumerator SetTimeScale(float newTimeScale, float duration)
+        {
+            float elapsedTime = 0f;
+            float oldTimeScale = Time.timeScale;
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime;
+                float t = elapsedTime / duration;
+                Time.timeScale = Mathf.Lerp(oldTimeScale, newTimeScale, t);
+                yield return null;
+            }
+            yield break;
+        }
+
+        [MonoModReplace]
+        private void SetTimeScale(float newTimeScale)
+        {
+            Time.timeScale = newTimeScale;
+        }
+
+        #endregion
+
+        private void UpdateUIStateFromGameState()
+        {
+            if (ui != null)
+            {
+                ui.SetUIStartState(gameState);
+                return;
+            }
+            ui = FindObjectOfType<UIManager>();
+            if (ui != null)
+            {
+                ui.SetUIStartState(gameState);
+                return;
+            }
+            Debug.LogError("GM: Could not find the UI manager in this scene.");
+        }
 
         [MonoModIgnore]
         private bool respawningHero;

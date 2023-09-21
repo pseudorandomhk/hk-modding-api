@@ -191,6 +191,12 @@ namespace Modding
         /// <returns></returns>
         public virtual string GetMenuButtonText() => $"{GetName()} {Language.Language.Get("MAIN_OPTIONS", "MainMenu")}";
 
+        /// <summary>
+        ///     Returns the time to be waited before loading a scene.
+        /// </summary>
+        /// <returns></returns>
+        public virtual float BeforeAdditiveLoad(string scene) => 0;
+
         private void HookSaveMethods()
         {
             ModHooks.ApplicationQuitHook += SaveGlobalSettings;

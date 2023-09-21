@@ -34,7 +34,7 @@ public static class HookRuntimePatches
                 MagnitudeMultiplier = fsm.FsmVariables.FindFsmFloat("magnitudeMult"),
                 MoveAngle = fsm.FsmVariables.FindFsmFloat("Move Angle"),
                 MoveDirection = fsm.FsmVariables.FindFsmBool("moveDirection"),
-                Multiplier = fsm.FsmVariables.FindFsmFloat("multiplier"),
+                Multiplier = fsm.FsmVariables.FindFsmFloat("Multiplier"),
                 SpecialType = fsm.FsmVariables.FindFsmInt("Special Type")
             };
             state.AppendAction(inject);

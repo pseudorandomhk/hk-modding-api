@@ -854,6 +854,21 @@ namespace Modding.Patches
         [MonoModPublic]
         public Transform LocateSpawnPoint() => orig_LocateSpawnPoint();
 
+        [MonoModIgnore]
+        private extern void ResetMotion();
+
+        [MonoModIgnore]
+        private float recoilTimer;
+
+        private void CancelDamageRecoil()
+        {
+            cState.recoiling = false;
+            recoilTimer = 0f;
+            ResetMotion();
+            AffectedByGravity(true);
+            SetDamageMode(DamageMode.FULL_DAMAGE);
+        }
+
         public bool TakeNoDamage
         {
             get => takeNoDamage;
