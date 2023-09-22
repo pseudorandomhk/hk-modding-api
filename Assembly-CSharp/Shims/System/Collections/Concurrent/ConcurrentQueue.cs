@@ -8,7 +8,7 @@ namespace System.Collections.Concurrent;
 /// Scuffed port of <c>System.Collections.Concurrent.ConcurrentQueue</c> from later .NET versions
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class ConcurrentQueue<T> : Queue<T>
+public class ConcurrentQueue<T> : Queue<T>, IProducerConsumerCollection<T>
 {
     private object _lock = new();
 
@@ -80,4 +80,14 @@ public class ConcurrentQueue<T> : Queue<T>
             return true;
         }
     }
+
+    /// <inheritdoc />
+    public bool TryAdd(T item)
+    {
+        Enqueue(item);
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryTake(out T item) => TryDequeue(out item);
 }

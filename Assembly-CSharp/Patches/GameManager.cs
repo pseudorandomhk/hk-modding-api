@@ -163,69 +163,6 @@ namespace Modding.Patches
             });
         }
 
-        //public extern IEnumerator orig_TransitionScene(TransitionPoint gate);
-
-        //public IEnumerator TransitionScene(TransitionPoint gate)
-        //{
-        //    string sceneName = ModHooks.BeforeSceneLoad(gate.targetScene);
-        //    if (sceneName != gate.targetScene) throw new NotSupportedException("Modifying destination scene not yet supported");
-
-        //    return orig_TransitionScene(gate);
-        //}
-
-        //public IEnumerator TransitionScene(string entryGateName, string targetScene, GatePosition gatePos)
-        //{
-        //    this.callingGate = null;
-        //    if (this.hero_ctrl.cState.superDashing)
-        //    {
-        //        this.hero_ctrl.exitedSuperDashing = true;
-        //    }
-        //    if (this.hero_ctrl.cState.spellQuake)
-        //    {
-        //        this.hero_ctrl.exitedQuake = true;
-        //    }
-        //    this.hero_ctrl.GetComponent<PlayMakerFSM>().SendEvent("HeroCtrl-LeavingScene");
-        //    this.NoLongerFirstGame();
-        //    this.SaveLevelState();
-        //    this.SetState(GameState.EXITING_LEVEL);
-        //    this.entryGateName = entryGateName;
-        //    this.targetScene = targetScene;
-        //    ((HeroController)this.hero_ctrl).LeaveSceneByGatePos(gatePos);
-        //    this.cameraCtrl.FreezeInPlace(true);
-        //    this.cameraCtrl.FadeOut(CameraFadeType.LEVEL_TRANSITION);
-        //    yield return new WaitForSeconds(0.5f);
-        //    this.LeftScene(true);
-        //    yield break;
-        //}
-
-        //private void ChangeToScene(string targetScene, string entryGateName, float pauseBeforeEnter, bool triggerHook)
-        //{
-        //    if (this.hero_ctrl != null)
-        //    {
-        //        this.hero_ctrl.proxyFSM.SendEvent("HeroCtrl-LeavingScene");
-        //        this.hero_ctrl.transform.SetParent(null);
-        //    }
-        //    this.NoLongerFirstGame();
-        //    this.SaveLevelState();
-        //    this.SetState(GameState.EXITING_LEVEL);
-        //    this.entryGateName = entryGateName;
-        //    this.targetScene = triggerHook ? ModHooks.BeforeSceneLoad(targetScene) : targetScene;
-        //    this.entryDelay = pauseBeforeEnter;
-        //    this.cameraCtrl.FreezeInPlace(false);
-        //    if (this.hero_ctrl != null)
-        //    {
-        //        this.hero_ctrl.ResetState();
-        //    }
-        //    this.LeftScene(false);
-        //}
-
-        //[MonoModReplace]
-        //public void ChangeToScene(string targetScene, string entryGateName, float pauseBeforeEnter) =>
-        //    ChangeToScene(targetScene, entryGateName, pauseBeforeEnter, true);
-
-        //public void ChangeToSceneSilently(string targetScene, string entryGateName, float pauseBeforeEnter) =>
-        //    ChangeToScene(targetScene, entryGateName, pauseBeforeEnter, false);
-
         #endregion
 
         public extern void orig_ClearSaveFile(int saveSlot);

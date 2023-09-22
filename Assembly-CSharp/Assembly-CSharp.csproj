@@ -13,7 +13,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Files Include="$(SolutionDir)Vanilla/*" />
+        <!-- exclude System.Core.dll because it causes problems with MonoMod.exe -->
+        <Files Include="$(SolutionDir)Vanilla/*" Exclude="$(SolutionDir)Vanilla/System.Core.dll" />
 
         <BuildDir Include="$(TargetDir)" />
         

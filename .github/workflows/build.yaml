@@ -1,6 +1,8 @@
 name: build
 
 on: [push, pull_request]
+  branches-ignore:
+    - '1028'
 
 jobs:
   build-win:
