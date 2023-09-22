@@ -84,7 +84,7 @@ internal class Preloader : MonoBehaviour
         GameObject panel = CanvasUtil.CreateImagePanel
         (
             _blanker,
-            CanvasUtil.NullSprite(new byte[] { 0x00, 0x00, 0x00, 0xFF }),
+            CanvasUtil.NullSprite(new byte[] { 0xFF, 0x00, 0x00, 0x00 }),
             new CanvasUtil.RectData(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.one)
         );
 
